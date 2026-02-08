@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Milestone 1 Plan
+    url: https://github.com/ridermw/SimTrade/blob/main/docs/planning/milestone-01-feature-breakdown.md
+    about: Review planned scope and acceptance criteria before opening issues.
