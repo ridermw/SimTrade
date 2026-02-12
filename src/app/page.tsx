@@ -1,6 +1,6 @@
 'use client'
 
-import { useReducer, useEffect } from 'react'
+import { useReducer, useEffect, useState } from 'react'
 import TradeTicket from '../components/TradeTicket'
 import { executionReducer, createInitialState } from '../lib/execution'
 import { OrderType } from '../types'
@@ -19,18 +19,13 @@ export default function Home() {
   }
 
   // Update state with mock prices on mount
-  if (state.currentPrices.FYNX === 100) {
+  useEffect(() => {
     dispatch({ type: 'UPDATE_PRICES', prices: mockPrices })
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
-  const [selectedSymbol, setSelectedSymbol] = useReducer(
-    (_: string, symbol: string) => symbol,
-    'FYNX'
-  )
-  const [lastError, setLastError] = useReducer(
-    (_: string | undefined, error: string | undefined) => error,
-    undefined
-  )
+  const [selectedSymbol, setSelectedSymbol] = useState('FYNX')
+  const [lastError, setLastError] = useState<string | undefined>(undefined)
 
   const handleTrade = (type: OrderType, quantity: number) => {
     setLastError(undefined)
