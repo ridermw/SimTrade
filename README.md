@@ -60,12 +60,12 @@ Example flow:
 
 | Component          | Technology                                         |
 | ------------------ | -------------------------------------------------- |
-| Frontend           | React / Next.js or SvelteKit                       |
+| Frontend           | Next.js 15 with React 19                           |
 | Charting           | Recharts or D3.js                                  |
 | Backend (optional) | Node.js / Express (for event simulation)           |
 | State Management   | Redux Toolkit / Zustand                            |
 | Data Simulation    | Geometric Brownian Motion or Monte Carlo generator |
-| Styling            | Tailwind CSS                                       |
+| Styling            | Tailwind CSS v4                                    |
 
 ---
 
@@ -79,8 +79,8 @@ Example flow:
 ### Installation
 
 ```bash
-git clone https://github.com/yourusername/simtrader.git
-cd simtrader
+git clone https://github.com/ridermw/SimTrade.git
+cd SimTrade
 npm install
 npm run dev
 ```
@@ -120,11 +120,5 @@ This creates realistic intraday price movement patterns.
 
 ## 📜 License
 
-MIT License. See `LICENSE` for details.
+MIT License. See [LICENSE](LICENSE) for details.
 
----
-
-## 🧠 Credits
-
-Developed by [Your Name].
-Inspired by paper trading platforms and day trading analytics tools.
