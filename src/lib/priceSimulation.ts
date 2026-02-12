@@ -6,8 +6,11 @@ const INITIAL_PRICES = {
   MERA: 134.67,
 };
 
+// Volatility factor for simulating price changes (0.2% per tick)
+const VOLATILITY = 0.002;
+
 export function generatePriceUpdate(ticker: Ticker): Ticker {
-  const volatility = 0.002;
+  const volatility = VOLATILITY;
   const randomChange = (Math.random() - 0.5) * 2 * volatility;
   const newPrice = ticker.price * (1 + randomChange);
   const change = newPrice - INITIAL_PRICES[ticker.symbol as keyof typeof INITIAL_PRICES];

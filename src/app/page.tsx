@@ -6,9 +6,12 @@ import SessionTimer from "@/components/SessionTimer";
 import { initializeTickers, generatePriceUpdate } from "@/lib/priceSimulation";
 import type { Ticker, SessionState } from "@/types/market";
 
+const SESSION_DURATION = 60;
+const PRICE_UPDATE_INTERVAL = 500;
+
 export default function Home() {
   const [tickers, setTickers] = useState<Ticker[]>([]);
-  const [secondsRemaining, setSecondsRemaining] = useState(60);
+  const [secondsRemaining, setSecondsRemaining] = useState(SESSION_DURATION);
   const [sessionState, setSessionState] = useState<SessionState>("active");
 
   useEffect(() => {
@@ -38,7 +41,7 @@ export default function Home() {
       setTickers((prevTickers) =>
         prevTickers.map((ticker) => generatePriceUpdate(ticker))
       );
-    }, 500);
+    }, PRICE_UPDATE_INTERVAL);
 
     return () => clearInterval(priceInterval);
   }, [sessionState]);

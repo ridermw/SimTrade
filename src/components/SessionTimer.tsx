@@ -1,5 +1,7 @@
 "use client";
 
+const LOW_TIME_THRESHOLD = 10;
+
 interface SessionTimerProps {
   secondsRemaining: number;
 }
@@ -7,7 +9,7 @@ interface SessionTimerProps {
 export default function SessionTimer({ secondsRemaining }: SessionTimerProps) {
   const minutes = Math.floor(secondsRemaining / 60);
   const seconds = secondsRemaining % 60;
-  const isLowTime = secondsRemaining <= 10;
+  const isLowTime = secondsRemaining <= LOW_TIME_THRESHOLD;
 
   return (
     <div className="flex items-center justify-center gap-4 px-6 py-4 bg-gray-800 border-b border-gray-700">
