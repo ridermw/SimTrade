@@ -44,7 +44,7 @@ export function executionReducer(
         // Reject if symbol not found
         const rejectedOrder: Order = {
           ...orderData,
-          id: `order-${Date.now()}-${Math.random()}`,
+          id: crypto.randomUUID(),
           timestamp: Date.now(),
           status: 'REJECTED',
           rejectionReason: `Symbol ${orderData.symbol} not found`
@@ -69,7 +69,7 @@ export function executionReducer(
         if (!validation.valid) {
           const rejectedOrder: Order = {
             ...orderData,
-            id: `order-${Date.now()}-${Math.random()}`,
+            id: crypto.randomUUID(),
             timestamp: Date.now(),
             status: 'REJECTED',
             rejectionReason: validation.error
@@ -123,7 +123,7 @@ export function executionReducer(
 
         const filledOrder: Order = {
           ...orderData,
-          id: `order-${Date.now()}-${Math.random()}`,
+          id: crypto.randomUUID(),
           timestamp: Date.now(),
           status: 'FILLED',
           executedAt: Date.now(),
@@ -146,7 +146,7 @@ export function executionReducer(
         if (!validation.valid) {
           const rejectedOrder: Order = {
             ...orderData,
-            id: `order-${Date.now()}-${Math.random()}`,
+            id: crypto.randomUUID(),
             timestamp: Date.now(),
             status: 'REJECTED',
             rejectionReason: validation.error
@@ -167,8 +167,7 @@ export function executionReducer(
         let newHoldings: Holdings
         if (newQuantity === 0) {
           // Remove position if fully sold
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const { [orderData.symbol]: removed, ...remainingHoldings } =
+          const { [orderData.symbol]: _removed, ...remainingHoldings } =
             state.portfolio.holdings
           newHoldings = remainingHoldings
         } else {
@@ -193,7 +192,7 @@ export function executionReducer(
 
         const filledOrder: Order = {
           ...orderData,
-          id: `order-${Date.now()}-${Math.random()}`,
+          id: crypto.randomUUID(),
           timestamp: Date.now(),
           status: 'FILLED',
           executedAt: Date.now(),

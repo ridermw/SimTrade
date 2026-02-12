@@ -11,18 +11,18 @@ export default function Home() {
     createInitialState(10000, ['FYNX', 'ZORD', 'MERA'])
   )
 
-  // Mock current prices - in a real app these would update from the simulation engine
-  const mockPrices = {
-    FYNX: 102.45,
-    ZORD: 87.12,
-    MERA: 156.78
-  }
-
   // Update state with mock prices on mount
   useEffect(() => {
-    dispatch({ type: 'UPDATE_PRICES', prices: mockPrices })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    // Mock current prices - in a real app these would update from the simulation engine
+    dispatch({
+      type: 'UPDATE_PRICES',
+      prices: {
+        FYNX: 102.45,
+        ZORD: 87.12,
+        MERA: 156.78
+      }
+    })
+  }, [dispatch])
 
   const [selectedSymbol, setSelectedSymbol] = useState('FYNX')
   const [lastError, setLastError] = useState<string | undefined>(undefined)
