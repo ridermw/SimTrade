@@ -1,4 +1,4 @@
-import { Position } from "./position";
+import type { Position } from "./position";
 
 /**
  * Portfolio represents the complete account state including cash and positions
@@ -12,7 +12,7 @@ export interface Portfolio {
   positions: Record<string, Position>;
   /** Total market value of all positions */
   positionsValue: number;
-  /** Total portfolio value (cash + positions) */
+  /** Total portfolio value (cash + positionsValue) */
   totalValue: number;
   /** Total profit/loss since start (totalValue - initialCash) */
   totalPnL: number;

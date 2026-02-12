@@ -12,7 +12,7 @@ export interface Position {
   currentPrice: number;
   /** Total market value (quantity * currentPrice) */
   marketValue: number;
-  /** Unrealized profit/loss (marketValue - totalCost) */
+  /** Unrealized profit/loss (marketValue - quantity * averageCost) */
   unrealizedPnL: number;
   /** Unrealized profit/loss as percentage */
   unrealizedPnLPercent: number;
