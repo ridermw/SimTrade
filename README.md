@@ -12,21 +12,21 @@ Each in-game trading day lasts less than **5 minutes**, during which prices upda
 
 **Features:**
 
-* Realistic intraday price movements
-* 5-minute accelerated trading sessions
-* Interactive charts for price tracking
-* Simple buy/sell interface for instant trades
-* Portfolio and P&L tracking
-* Configurable difficulty levels (low, medium, high volatility)
+- Realistic intraday price movements
+- 5-minute accelerated trading sessions
+- Interactive charts for price tracking
+- Simple buy/sell interface for instant trades
+- Portfolio and P&L tracking
+- Configurable difficulty levels (low, medium, high volatility)
 
 ---
 
 ## 🧠 Game Concept
 
-* Each company has a generated ticker (e.g., `FYNX`, `ZORD`, `MERA`).
-* Prices are simulated using a stochastic model (e.g., geometric Brownian motion).
-* Market events (earnings, news shocks) cause sudden volatility spikes.
-* The simulation ends with a “market close,” showing your total gain or loss.
+- Each company has a generated ticker (e.g., `FYNX`, `ZORD`, `MERA`).
+- Prices are simulated using a stochastic model (e.g., geometric Brownian motion).
+- Market events (earnings, news shocks) cause sudden volatility spikes.
+- The simulation ends with a “market close,” showing your total gain or loss.
 
 Example flow:
 
@@ -73,8 +73,8 @@ Example flow:
 
 ### Prerequisites
 
-* Node.js ≥ 18
-* npm or yarn
+- Node.js ≥ 18
+- npm or yarn
 
 ### Installation
 
@@ -91,11 +91,11 @@ Then open [http://localhost:3000](http://localhost:3000).
 
 ## 🥩 Future Enhancements
 
-* Global leaderboard and social sharing
-* Market news feed simulation
-* Multi-day tournaments
-* AI-based trader opponents
-* Mobile PWA support
+- Global leaderboard and social sharing
+- Market news feed simulation
+- Multi-day tournaments
+- AI-based trader opponents
+- Mobile PWA support
 
 ---
 
@@ -109,10 +109,10 @@ P(t+1) = P(t) * exp( (μ - 0.5σ²)Δt + σ√Δt * ε )
 
 Where:
 
-* `μ` = expected return (drift)
-* `σ` = volatility
-* `ε` = random variable ~ N(0,1)
-* `Δt` = tick time interval
+- `μ` = expected return (drift)
+- `σ` = volatility
+- `ε` = random variable ~ N(0,1)
+- `Δt` = tick time interval
 
 This creates realistic intraday price movement patterns.
 
