@@ -1,0 +1,26 @@
+[
+  {
+    "symbol": "FYNX",
+    "name": "Fynex Technologies",
+    "sector": "Technology",
+    "initialPrice": 102.45,
+    "drift": 0.08,
+    "volatility": 0.35
+  },
+  {
+    "symbol": "ZORD",
+    "name": "Zordian Industries",
+    "sector": "Manufacturing",
+    "initialPrice": 87.12,
+    "drift": 0.05,
+    "volatility": 0.25
+  },
+  {
+    "symbol": "MERA",
+    "name": "Meralon Pharmaceuticals",
+    "sector": "Healthcare",
+    "initialPrice": 156.80,
+    "drift": 0.12,
+    "volatility": 0.42
+  }
+]
