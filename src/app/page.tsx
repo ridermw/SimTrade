@@ -1,103 +1,211 @@
-import Image from "next/image";
+'use client'
+
+import { useReducer, useEffect } from 'react'
+import TradeTicket from '../components/TradeTicket'
+import { executionReducer, createInitialState } from '../lib/execution'
+import { OrderType } from '../types'
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [state, dispatch] = useReducer(
+    executionReducer,
+    createInitialState(10000, ['FYNX', 'ZORD', 'MERA'])
+  )
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  // Mock current prices - in a real app these would update from the simulation engine
+  const mockPrices = {
+    FYNX: 102.45,
+    ZORD: 87.12,
+    MERA: 156.78
+  }
+
+  // Update state with mock prices on mount
+  if (state.currentPrices.FYNX === 100) {
+    dispatch({ type: 'UPDATE_PRICES', prices: mockPrices })
+  }
+
+  const [selectedSymbol, setSelectedSymbol] = useReducer(
+    (_: string, symbol: string) => symbol,
+    'FYNX'
+  )
+  const [lastError, setLastError] = useReducer(
+    (_: string | undefined, error: string | undefined) => error,
+    undefined
+  )
+
+  const handleTrade = (type: OrderType, quantity: number) => {
+    setLastError(undefined)
+    dispatch({
+      type: 'EXECUTE_ORDER',
+      order: {
+        type,
+        symbol: selectedSymbol,
+        quantity,
+        price: state.currentPrices[selectedSymbol]
+      }
+    })
+  }
+
+  // Update error message when orders change
+  useEffect(() => {
+    const lastOrder = state.orders[state.orders.length - 1]
+    if (lastOrder && lastOrder.status === 'REJECTED') {
+      setLastError(lastOrder.rejectionReason)
+    }
+  }, [state.orders])
+
+  const currentPrice = state.currentPrices[selectedSymbol] || 0
+  const sharesOwned =
+    state.portfolio.holdings[selectedSymbol]?.quantity || 0
+
+  return (
+    <div className="min-h-screen p-8 bg-gray-50">
+      <main className="max-w-4xl mx-auto">
+        <h1 className="text-3xl font-bold mb-8">SimTrade</h1>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          {/* Portfolio Summary */}
+          <div className="p-6 bg-white rounded-lg shadow-sm border">
+            <h2 className="text-xl font-semibold mb-4">Portfolio</h2>
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span className="text-gray-600">Cash:</span>
+                <span className="font-semibold">
+                  ${state.portfolio.cash.toFixed(2)}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Total Value:</span>
+                <span className="font-semibold">
+                  ${state.portfolio.totalValue.toFixed(2)}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">P&L:</span>
+                <span
+                  className={`font-semibold ${
+                    state.portfolio.totalValue >= 10000
+                      ? 'text-green-600'
+                      : 'text-red-600'
+                  }`}
+                >
+                  ${(state.portfolio.totalValue - 10000).toFixed(2)}
+                </span>
+              </div>
+            </div>
+
+            <h3 className="text-lg font-semibold mt-6 mb-3">Holdings</h3>
+            {Object.keys(state.portfolio.holdings).length === 0 ? (
+              <p className="text-gray-500 text-sm">No positions</p>
+            ) : (
+              <div className="space-y-2">
+                {Object.values(state.portfolio.holdings).map((position) => (
+                  <div
+                    key={position.symbol}
+                    className="flex justify-between text-sm"
+                  >
+                    <span className="font-medium">{position.symbol}:</span>
+                    <span>
+                      {position.quantity} @ $
+                      {position.averagePrice.toFixed(2)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Market Prices */}
+          <div className="p-6 bg-white rounded-lg shadow-sm border">
+            <h2 className="text-xl font-semibold mb-4">Market Prices</h2>
+            <div className="space-y-3">
+              {Object.entries(state.currentPrices).map(([symbol, price]) => (
+                <button
+                  key={symbol}
+                  onClick={() => setSelectedSymbol(symbol)}
+                  className={`w-full p-3 rounded-lg border-2 transition-colors ${
+                    selectedSymbol === symbol
+                      ? 'border-blue-500 bg-blue-50'
+                      : 'border-gray-200 hover:border-blue-300'
+                  }`}
+                >
+                  <div className="flex justify-between items-center">
+                    <span className="font-semibold text-lg">{symbol}</span>
+                    <span className="text-lg">${price.toFixed(2)}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Trade Ticket */}
+        <div className="mb-8">
+          <TradeTicket
+            symbol={selectedSymbol}
+            currentPrice={currentPrice}
+            cashAvailable={state.portfolio.cash}
+            sharesOwned={sharesOwned}
+            onTrade={handleTrade}
+            error={lastError}
+          />
+        </div>
+
+        {/* Recent Orders */}
+        <div className="p-6 bg-white rounded-lg shadow-sm border">
+          <h2 className="text-xl font-semibold mb-4">Recent Orders</h2>
+          {state.orders.length === 0 ? (
+            <p className="text-gray-500">No orders yet</p>
+          ) : (
+            <div className="space-y-2">
+              {state.orders
+                .slice()
+                .reverse()
+                .slice(0, 5)
+                .map((order) => (
+                  <div
+                    key={order.id}
+                    className="p-3 border rounded-lg flex justify-between items-center"
+                  >
+                    <div>
+                      <span
+                        className={`font-semibold ${
+                          order.type === 'BUY'
+                            ? 'text-green-600'
+                            : 'text-red-600'
+                        }`}
+                      >
+                        {order.type}
+                      </span>{' '}
+                      {order.quantity} {order.symbol}
+                    </div>
+                    <div className="text-right">
+                      <div
+                        className={`font-medium ${
+                          order.status === 'FILLED'
+                            ? 'text-green-600'
+                            : 'text-red-600'
+                        }`}
+                      >
+                        {order.status}
+                      </div>
+                      {order.status === 'FILLED' && order.executionPrice && (
+                        <div className="text-sm text-gray-600">
+                          @ ${order.executionPrice.toFixed(2)}
+                        </div>
+                      )}
+                      {order.status === 'REJECTED' &&
+                        order.rejectionReason && (
+                          <div className="text-xs text-red-600">
+                            {order.rejectionReason}
+                          </div>
+                        )}
+                    </div>
+                  </div>
+                ))}
+            </div>
+          )}
         </div>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
-  );
+  )
 }
