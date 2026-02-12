@@ -23,6 +23,7 @@ export class TickGenerator {
   private previousPrice: number;
   private currentTime: number;
   private tickCount: number;
+  private readonly initialStartTime: number; // Store original start time for deterministic reset
 
   /**
    * Create a new deterministic tick generator
@@ -33,7 +34,8 @@ export class TickGenerator {
     this.rng = new SeededRandom(config.seed);
     this.currentPrice = config.initialPrice;
     this.previousPrice = config.initialPrice;
-    this.currentTime = config.startTime ?? Date.now();
+    this.initialStartTime = config.startTime ?? Date.now();
+    this.currentTime = this.initialStartTime;
     this.tickCount = 0;
   }
 
@@ -117,7 +119,7 @@ export class TickGenerator {
     this.rng.reset(seed);
     this.currentPrice = this.config.initialPrice;
     this.previousPrice = this.config.initialPrice;
-    this.currentTime = this.config.startTime ?? Date.now();
+    this.currentTime = this.initialStartTime; // Use stored initial start time for determinism
     this.tickCount = 0;
     if (newSeed !== undefined) {
       this.config.seed = newSeed;

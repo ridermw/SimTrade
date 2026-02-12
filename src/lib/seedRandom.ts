@@ -34,8 +34,13 @@ export class SeededRandom {
    * @returns Random number from N(0,1)
    */
   nextGaussian(): number {
-    const u1 = this.next();
+    let u1 = this.next();
     const u2 = this.next();
+
+    // Ensure u1 > 0 to avoid log(0) which produces -Infinity
+    while (u1 <= 1e-10) {
+      u1 = this.next();
+    }
 
     // Box-Muller transform
     const z0 = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
