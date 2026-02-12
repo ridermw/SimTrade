@@ -107,7 +107,6 @@ for (const preset of presets) {
   });
 
   const ticks = gen.generateTicks(50);
-  const prices = ticks.map((t) => t.price);
   const avgChange =
     ticks.reduce((sum, t) => sum + Math.abs(t.changePercent), 0) / ticks.length;
   results[preset] = avgChange;
